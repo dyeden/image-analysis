@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from PyQt4.QtGui import QAction, QIcon, QFileDialog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -58,13 +58,15 @@ class ImageAnalysis:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-
+        self.dlg = ImageAnalysisDialog()
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Image Analysis')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'ImageAnalysis')
         self.toolbar.setObjectName(u'ImageAnalysis')
+        self.dlg.lineEdit.clear()
+        self.dlg.pushButton.clicked.connect(self.select_output_file)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -179,6 +181,10 @@ class ImageAnalysis:
         # remove the toolbar
         del self.toolbar
 
+    def select_output_file(self):
+        filename = QFileDialog.getSaveFileName(self.dlg, "Select output file ", "", "*.txt")
+        self.dlg.lineEdit.setText(filename)
+
 
     def run(self):
         """Run method that performs all the real work"""
@@ -186,8 +192,11 @@ class ImageAnalysis:
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
+
         # See if OK was pressed
         if result:
+            print(dir(self.dlg))
+            print("ok working")
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
