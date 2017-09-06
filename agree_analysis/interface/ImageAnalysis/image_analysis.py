@@ -65,8 +65,9 @@ class ImageAnalysis:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'ImageAnalysis')
         self.toolbar.setObjectName(u'ImageAnalysis')
-        self.dlg.lineEdit.clear()
-        self.dlg.pushButton.clicked.connect(self.select_output_file)
+        
+        
+        # self.dlg.pushButton_2.clicked.connect(self.select_output_file)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -170,6 +171,9 @@ class ImageAnalysis:
             callback=self.run,
             parent=self.iface.mainWindow())
 
+        self.dlg.lineEdit.clear()
+        self.dlg.pushButton.clicked.connect(self.select_output_file)
+
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -195,7 +199,7 @@ class ImageAnalysis:
 
         # See if OK was pressed
         if result:
-            print(dir(self.dlg))
+            print(dir(self.dlg.pushButton))
             print("ok working")
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
