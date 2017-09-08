@@ -21,7 +21,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from PyQt4.QtGui import QAction, QIcon, QFileDialog
+from PyQt4.QtGui import QAction, QIcon, QFileDialog, QTableWidgetItem
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
@@ -66,9 +66,6 @@ class ImageAnalysis:
         self.toolbar = self.iface.addToolBar(u'ImageAnalysis')
         self.toolbar.setObjectName(u'ImageAnalysis')
         
-        
-        # self.dlg.pushButton_2.clicked.connect(self.select_output_file)
-
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -171,8 +168,8 @@ class ImageAnalysis:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-        self.dlg.lineEdit.clear()
-        self.dlg.pushButton.clicked.connect(self.select_output_file)
+        self.dlg.lineEdit_input_s1.clear()
+        self.dlg.pushButton_s1.clicked.connect(self.select_output_file)
 
 
     def unload(self):
@@ -186,8 +183,15 @@ class ImageAnalysis:
         del self.toolbar
 
     def select_output_file(self):
-        filename = QFileDialog.getSaveFileName(self.dlg, "Select output file ", "", "*.txt")
-        self.dlg.lineEdit.setText(filename)
+        # filename = QFileDialog.getSaveFileName(self.dlg, "Select output file ", "", "*.txt")
+        filename = QFileDialog.getExistingDirectory(self.dlg, "Select output file ", "")
+        self.dlg.lineEdit_input_s1.setText(filename)
+        self.dlg.comboBox_s1.addItems(["Java", "C#", "Python"])
+        self.dlg.tableWidget_comparison.setRowCount(4)
+        self.dlg.tableWidget_comparison.setColumnCount(2) 
+        self.dlg.tableWidget_comparison.setItem(0,0, QTableWidgetItem("Item (1,1)"))
+        self.dlg.tableWidget_comparison.show()
+
 
 
     def run(self):
@@ -199,7 +203,6 @@ class ImageAnalysis:
 
         # See if OK was pressed
         if result:
-            print(dir(self.dlg.pushButton))
             print("ok working")
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
