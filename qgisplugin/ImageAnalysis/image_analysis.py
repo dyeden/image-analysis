@@ -25,6 +25,7 @@ from PyQt4.QtGui import QAction, QIcon, QFileDialog, QTableWidgetItem
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
+from engine.agree.agree_layout import AgreeLayout
 from image_analysis_dialog import ImageAnalysisDialog
 import os.path
 
@@ -63,6 +64,7 @@ class ImageAnalysis:
         self.actions = []
         self.menu = self.tr(u'&Image Analysis')
         # TODO: We are going to let the user set this up in a future iteration
+        self.agreelayout = AgreeLayout()
         self.toolbar = self.iface.addToolBar(u'ImageAnalysis')
         self.toolbar.setObjectName(u'ImageAnalysis')
         
@@ -167,10 +169,8 @@ class ImageAnalysis:
             text=self.tr(u''),
             callback=self.run,
             parent=self.iface.mainWindow())
-
-        self.dlg.lineEdit_input_s1.clear()
-        self.dlg.pushButton_s1.clicked.connect(self.select_output_file)
-
+        
+        self.init_plugin()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -192,7 +192,47 @@ class ImageAnalysis:
         self.dlg.tableWidget_comparison.setItem(0,0, QTableWidgetItem("Item (1,1)"))
         self.dlg.tableWidget_comparison.show()
 
+    def set_config_options(self):
+        print "working set_config_options"
+        sourcename1 = self.dlg.comboBox_s1.currentText()
+        sourcename2 = self.dlg.comboBox_s2.currentText()
 
+        if sourcename1 == sourcename2:
+            self.dlg.tableWidget_comparison.clear()
+            return None
+
+        self.dlg.tableWidget_comparison.setRowCount(4)
+        self.dlg.tableWidget_comparison.setColumnCount(2) 
+
+        self.dlg.tableWidget_comparison.setHorizontalHeaderItem(0, QTableWidgetItem(sourcename1))
+        self.dlg.tableWidget_comparison.setHorizontalHeaderItem(1, QTableWidgetItem(sourcename2))
+
+
+        self.dlg.tableWidget_comparison.setItem(0,0, QTableWidgetItem(sourcename1))
+        self.dlg.tableWidget_comparison.setItem(0,1, QTableWidgetItem(sourcename2))
+        self.dlg.tableWidget_comparison.show()
+
+
+    def set_default_config(self):
+
+        #combo box source 1 e source 2
+        self.agreelayout.config_default()
+        self.dlg.comboBox_s1.addItems(self.agreelayout.combobox_names)
+        self.dlg.comboBox_s2.addItems(self.agreelayout.combobox_names)
+
+
+
+    def validate_config(self):
+        pass
+
+        
+
+    def init_plugin(self):
+        self.set_default_config()
+        self.dlg.comboBox_s1.currentIndexChanged.connect(self.set_config_options)
+        self.dlg.comboBox_s2.currentIndexChanged.connect(self.set_config_options)
+        self.set_config_options()
+ 
 
     def run(self):
         """Run method that performs all the real work"""
